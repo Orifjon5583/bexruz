@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disrupter 😈 | Digital Soul</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Code+Pro:wght@300;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    :root {
+        --neon-green: #00ff41;
+        --neon-red: #ff0000;
+        --dark-bg: #050505;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+        background-color: var(--dark-bg);
+        color: var(--neon-green);
+        font-family: 'Source Code Pro', monospace;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    /* Matrix Background */
+    #matrix-bg {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: -1;
+        opacity: 0.25;
+    }
+
+    /* Karta konteyneri - Ramka animatsiyasi */
+    .border-animation {
+        position: relative;
+        padding: 3px; 
+        background: linear-gradient(0deg, transparent, var(--neon-green), var(--neon-red), var(--neon-green), transparent);
+        background-size: 100% 200%;
+        border-radius: 20px;
+        animation: rotateBorder 4s linear infinite;
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+    }
+
+    @keyframes rotateBorder {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 0% 200%; }
+    }
+
+    .card {
+        background: rgba(0, 8, 0, 0.95);
+        border-radius: 18px;
+        width: 380px;
+        padding: 35px 25px;
+        text-align: center;
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Avatar Radar */
+    .avatar-container {
+        position: relative;
+        width: 130px;
+        height: 130px;
+        margin: 0 auto 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .radar-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 2px solid transparent;
+        border-top: 2px solid var(--neon-red);
+        border-radius: 50%;
+        animation: spin 2s linear infinite;
+    }
+
+    .radar-ring:nth-child(2) {
+        width: 115%;
+        height: 115%;
+        border-top: 2px solid var(--neon-green);
+        animation: spin 3s linear reverse infinite;
+        opacity: 0.5;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .profile-img {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        border: 2px solid var(--neon-green);
+        z-index: 5;
+        object-fit: cover;
+    }
+
+    /* Glitch Title - Endi 😈 bilan */
+    h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 26px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+        position: relative;
+        color: var(--neon-green);
+    }
+
+    h1::before, h1::after {
+        content: "Disrupter 😈"; /* Glitch effekti uchun stiker qo'shildi */
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        opacity: 0.7;
+    }
+
+    h1:hover::before {
+        animation: glitch 0.3s infinite;
+        color: var(--neon-red);
+        left: -2px;
+    }
+
+    @keyframes glitch {
+        0% { clip: rect(10px, 999px, 40px, 0); }
+        50% { clip: rect(30px, 999px, 80px, 0); }
+        100% { clip: rect(60px, 999px, 20px, 0); }
+    }
+
+    .bio {
+        font-size: 13px;
+        height: 45px;
+        margin-bottom: 25px;
+        color: #ddd;
+    }
+
+    /* Linklar */
+    .links { display: flex; flex-direction: column; gap: 12px; }
+
+
+.link-item {
+        position: relative;
+        text-decoration: none;
+        color: var(--neon-green);
+        border: 1px solid rgba(0, 255, 65, 0.3);
+        padding: 12px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        overflow: hidden;
+        transition: 0.4s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: rgba(0, 20, 0, 0.5);
+    }
+
+    .link-item:hover {
+        border-color: var(--neon-red);
+        color: white;
+        text-shadow: 0 0 5px var(--neon-red);
+    }
+
+    .link-item::after {
+        content: "";
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.2), transparent);
+        transition: 0.5s;
+    }
+
+    .link-item:hover::after { left: 100%; }
+
+    /* About Panel */
+    #about-panel {
+        display: none;
+        background: rgba(0, 0, 0, 0.95);
+        border: 1px solid var(--neon-red);
+        margin: 15px 0;
+        padding: 15px;
+        text-align: left;
+        font-size: 12px;
+        line-height: 1.6;
+        border-radius: 5px;
+        color: #fff;
+    }
+
+    .about-btn {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid var(--neon-red);
+        color: var(--neon-red);
+        padding: 10px;
+        cursor: pointer;
+        font-family: 'Orbitron';
+        width: 100%;
+        margin-bottom: 10px;
+        transition: 0.3s;
+    }
+
+    .about-btn:hover {
+        background: var(--neon-red);
+        color: #fff;
+        box-shadow: 0 0 20px var(--neon-red);
+    }
+
+    .tag { color: var(--neon-green); }
+</style>
+</head>
+<body>
+
+    <canvas id="matrix-bg"></canvas>
+
+    <div class="border-animation">
+        <div class="card">
+            <div class="avatar-container">
+                <div class="radar-ring"></div>
+                <div class="radar-ring"></div>
+                <img src="https://i.ibb.co/hR1QrJ3n/logo.jpg" class="profile-img" alt="Disrupter">
+            </div>
+
+            <h1>Disrupter 😈</h1>
+            <div class="bio" id="typewriter"></div>
+
+            <button class="about-btn" onclick="toggleAbout()"> About me </button>
+            
+            <div id="about-panel">
+                <span class="tag">> SYSTEM:</span> Behruzbek Safarov Anvar o'g'li 23.08.2005 <br>
+                <span class="tag">> STATUS:</span> Abu Rayhon Nomidagi Urganch Davlat Universiteti 3-kurs<br>
+                <span class="tag">> JOB:</span> Urganch RANCH texnologiya universiteti Robota texnikadan mutahasis<br>
+                <span class="tag">> SKILL:</span> Kiber havsizlik (Hacker)<br>
+                <span class="tag">> LOC:</span> Yangiariq Qarmish Sherobod porloq isteqlol 106<br>
+                <span class="tag">> NOTE:</span> Yolg'on gapiradiganlar va aybini tan olmaydiganlar yoqmaydi.
+
+    
+    
+    
+            </div>
+
+            <div class="links">
+                <a href="https://t.me/mr_bekii" class="link-item"><i class="fab fa-telegram"></i> Telegram</a>
+                <a href="https://t.me/mr_bekii_bot" class="link-item"><i class="fas fa-robot"></i> Telegram Bot</a>
+                <a href="https://t.me/qwertyu1235678" class="link-item"><i class="fas fa-code-branch"></i> Blog</a>
+                <a href="https://www.instagram.com/_safarov__behruz_" class="link-item"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="tel:+998970916789" class="link-item"><i class="fas fa-phone"></i> Call</a>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // Matrix Background
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const binar = "010101#@%&*"; 
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    for (let i = 0; i < columns; i++) drops[i] = 1;
+
+function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < drops.length; i++) {
+            const text = binar[Math.floor(Math.random() * binar.length)];
+            ctx.fillStyle = Math.random() > 0.95 ? "#ff0000" : "#00ff41";
+            ctx.font = fontSize + "px monospace";
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i] += 1;
+        }
+    }
+    setInterval(draw, 33);
+
+    // Typewriter
+    const message = "Yolg'izlikning yaxshi tomoni - seni tark etishi mumkin bo'lgan hech kimning yo'qligi...";
+    let i = 0;
+    function typeWriter() {
+        if (i < message.length) {
+            document.getElementById("typewriter").innerHTML += message.charAt(i);
+            i++;
+            setTimeout(typeWriter, 60);
+        }
+    }
+    window.onload = typeWriter;
+
+    // Toggle Panel
+    function toggleAbout() {
+        const panel = document.getElementById("about-panel");
+        const btn = document.querySelector(".about-btn");
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+            btn.innerText = "[ ACCESS DATABASE ]";
+        } else {
+            panel.style.display = "block";
+            btn.innerText = "[ DISCONNECT ]";
+        }
+    }
+</script>
+
+</body>
+</html>
