@@ -35,9 +35,13 @@ body{
 /* MATRIX */
 canvas{
     position:fixed;
-    inset:0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index:-1;
-    opacity:.25;
+    /* Opacityni 1 qildim, shunda aniq va yorqin ko'rinadi */
+    opacity: 1; 
 }
 
 /* CARD */
@@ -50,13 +54,14 @@ canvas{
 @keyframes border{to{background-position:0 200%}}
 
 .card{
-    background:rgba(0,15,5,.95);
+    background:rgba(0,15,5,.90);
     border-radius:20px;
     width:100%;
     max-width:380px;
     padding:30px 24px;
     text-align:center;
-    backdrop-filter:blur(25px);
+    /* Orqa fon xiralashishini kuchaytirdim, shunda yozuvlar o'qiladi */
+    backdrop-filter:blur(10px); 
     box-shadow:0 0 40px rgba(0,255,65,.15);
 }
 
@@ -200,7 +205,6 @@ h1{
 <canvas id="matrix"></canvas>
 
 <!-- MUSIC -->
-<!-- Autoplay qo'shildi, lekin brauzer bloklashi mumkin -->
 <audio id="bg-music" loop autoplay>
     <source src="music.mp3" type="audio/mpeg">
 </audio>
@@ -217,18 +221,19 @@ h1{
 <img src="https://i.ibb.co/hR1QrJ3n/logo.jpg">
 </div>
 
-<h1>Disrupter 😈</h1>
+    <h1>Disrupter 😈</h1>
 <div class="bio" id="type"></div>
 
 <button class="btn" onclick="toggleAbout()">ABOUT ME</button>
 
-<div class="about" id="about">
-<span class="tag">> SYSTEM:</span> Behruzbek Safarov<br>
-<span class="tag">> STATUS:</span> UrDU 3-kurs<br>
-<span class="tag">> JOB:</span> Robotics Specialist<br>
-<span class="tag">> SKILL:</span> Cyber Security<br>
-<span class="tag">> NOTE:</span> Yolg‘on va mas’uliyatsizlik yoqmaydi
-</div>
+<div id="about-panel">
+                <span class="tag">> SYSTEM:</span> Behruzbek Safarov Anvar o'g'li 23.08.2005 <br>
+                <span class="tag">> STATUS:</span> Abu Rayhon Nomidagi Urganch Davlat Universiteti 3-kurs<br>
+                <span class="tag">> JOB:</span> Urganch RANCH texnologiya universiteti Robota texnikadan mutahasis<br>
+                <span class="tag">> SKILL:</span> Kiber havsizlik (Hacker)<br>
+                <span class="tag">> LOC:</span> Yangiariq Qarmish Sherobod porloq isteqlol 106<br>
+                <span class="tag">> NOTE:</span> Yolg'on gapiradiganlar va aybini tan olmaydiganlar yoqmaydi.
+            </div>
 
 <div class="links">
 <a class="link" href="https://t.me/mr_bekii"><i data-lucide="send"></i>Telegram</a>
@@ -242,48 +247,84 @@ h1{
 </div>
 
 <script>
-/* MATRIX */
-const c=document.getElementById("matrix"),x=c.getContext("2d");
-c.width=innerWidth;c.height=innerHeight;
-const chars="01#@$%&",f=14,col=c.width/f,d=Array(Math.floor(col)).fill(1);
-setInterval(()=>{
-x.fillStyle="rgba(0,0,0,.08)";
-x.fillRect(0,0,c.width,c.height);
-d.forEach((y,i)=>{
-x.fillStyle=Math.random()>.96?"#ff0033":"#00ff41";
-x.font=f+"px monospace";
-x.fillText(chars[Math.floor(Math.random()*chars.length)],i*f,y*f);
-if(y*f>c.height&&Math.random()>.975)d[i]=0;
-d[i]++;
-});
-},33);
+/* --- MATRIX ANIMATSIYASI (YANGILANGAN) --- */
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
 
-/* TYPE */
-const text="Yolg'izlikning yaxshi tomoni — seni tark etadigan hech kim yo‘q...";
+// Canvasni to'liq ekranga moslash
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas(); // Dastlabki yuklanish
+
+const chars = "01010101ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*";
+const letters = chars.split("");
+
+const fontSize = 14; // Shrift o'lchami
+let columns = canvas.width / fontSize; // Ustunlar soni
+
+// Har bir ustun uchun "y" koordinatasi (barchasi 1-dan boshlanadi)
+let drops = [];
+for (let x = 0; x < columns; x++) {
+    drops[x] = 1;
+}
+
+function drawMatrix() {
+    // Orqa fonni biroz qoraytirish (iz qolishi uchun 0.05 - juda sekin o'chadi)
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+        // Random belgi tanlash
+        const text = letters[Math.floor(Math.random() * letters.length)];
+
+        // Rang tanlash (95% yashil, 5% qizil - rasmdagidek)
+        ctx.fillStyle = Math.random() > 0.95 ? "#ff0033" : "#00ff41";
+        
+        // Belgini chizish
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        // Agar ekran pastiga yetsa va random bo'lsa, qayta tepaga chiqarish
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+        }
+
+        // Koordinatani pastga tushirish
+        drops[i]++;
+    }
+}
+
+// Doimiy qayta chizish tezligi (33ms ~ 30fps)
+setInterval(drawMatrix, 33);
+
+
+/* --- TYPEWRITER EFFECT --- */
+const text="Yolg'izlikning yaxshi tomoni - seni tark etishi mumkin bölgan hech kimning yoqligi...";
 let i=0;
 (function type(){
 if(i<text.length){
-typeEl=document.getElementById("type");
-typeEl.innerHTML+=text[i++];
-setTimeout(type,55);
+    document.getElementById("type").innerHTML+=text[i++];
+    setTimeout(type,55);
 }
 })();
 
-/* ABOUT */
+/* --- ABOUT TOGGLE --- */
 function toggleAbout(){
 const a=document.getElementById("about");
 a.style.display=a.style.display==="block"?"none":"block";
 }
 
-/* MUSIC MANTIQI */
+/* --- MUSIC PLAYER LOGIC --- */
 const music = document.getElementById("bg-music");
 const btn = document.querySelector(".music-btn");
-// Boshida "Playing" deb hisoblaymiz
 let playing = true; 
 music.volume = 0.25;
 
-// Brauzer avtomatik yurgizishni bloklasa, 
-// foydalanuvchi ekranni istalgan joyiga bosganda musiqa yonadi
+// Brauzer autoplayni bloklasa, birinchi klikda ishga tushirish
 document.addEventListener('click', function startAudio() {
     if(playing && music.paused){
         music.play().then(() => {
@@ -291,22 +332,19 @@ document.addEventListener('click', function startAudio() {
             lucide.createIcons();
         }).catch(err => console.log("Audio xatosi:", err));
     }
-}, { once: true }); // Faqat bir marta ishlaydi
+}, { once: true });
 
-// Sayt ochilishi bilan yurgizishga harakat qiladi
+// Avtomatik ishga tushirishga urinish
 music.play().catch(() => {
-    // Agar bloklansa, kutib turadi (yuqoridagi click funksiyasi ishga tushadi)
-    console.log("Brauzer autoplayni blokladi, bosish kutilmoqda.");
+    console.log("Kuting, foydalanuvchi bosishi kerak.");
 });
 
 function toggleMusic() {
     if (playing) {
-        // Hozir chalyapti, demak O'CHIRAMIZ (X qilamiz)
         music.pause();
         btn.innerHTML = '<i data-lucide="volume-x"></i>';
         playing = false;
     } else {
-        // Hozir o'chiq, demak YOQAMIZ (Volume qilamiz)
         music.play();
         btn.innerHTML = '<i data-lucide="volume-2"></i>';
         playing = true;
